@@ -73,7 +73,6 @@ public class BookmarkResource {
     @Timed(name = "createBookmark.time")
     public Response createBookmark(Bookmark bookmark) {
         bookmark.persist();
-        emitter.send(bookmark);
         return Response.created(URI.create("/bookmarks/" + bookmark.id)).build();
     }
 
