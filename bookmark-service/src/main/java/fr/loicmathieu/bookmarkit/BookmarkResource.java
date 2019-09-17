@@ -1,5 +1,6 @@
 package fr.loicmathieu.bookmarkit;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -20,19 +21,19 @@ import java.util.List;
 public class BookmarkResource {
 
     @GET
-    public List<Bookmark> listBookmarks(){
+    public List<Bookmark> listAll(){
         return Bookmark.listAll();
     }
 
     @GET
     @Path("/{id}")
-    public Bookmark getBookmark(@PathParam("id") Long id) {
+    public Bookmark get(@PathParam("id") Long id) {
         return Bookmark.findById(id);
     }
 
     @POST
     @Transactional
-    public Response createBookmark(Bookmark bookmark){
+    public Response create(Bookmark bookmark){
         bookmark.persist();
         return Response.created(URI.create("/bookmarks/" + bookmark.id)).build();
     }
@@ -40,7 +41,7 @@ public class BookmarkResource {
     @PUT
     @Path("/{id}")
     @Transactional
-    public void updateBookmark(Bookmark bookmark){
+    public void update(Bookmark bookmark){
         Bookmark existing = Bookmark.findById(bookmark.id);
         existing.url = bookmark.url;
         existing.description = bookmark.description;
@@ -50,7 +51,7 @@ public class BookmarkResource {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public void deleteBookmark(@PathParam("id")Long id){
+    public void delete(@PathParam("id")Long id){
         Bookmark existing = Bookmark.findById(id);
         existing.delete();
     }
