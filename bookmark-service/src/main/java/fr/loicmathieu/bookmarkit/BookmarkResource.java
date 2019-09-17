@@ -1,10 +1,18 @@
 package fr.loicmathieu.bookmarkit;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.List;
 
 @Path("/bookmarks")
@@ -12,23 +20,39 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookmarkResource {
 
-    public List<Bookmark> listBookmarks() {
-        throw new UnsupportedOperationException("not yet implemented");
+    @GET
+    public List<Bookmark> listAll(){
+        return Bookmark.listAll();
     }
 
-    public Bookmark getBookmark(Long id) {
-        throw new UnsupportedOperationException("not yet implemented");
+    @GET
+    @Path("/{id}")
+    public Bookmark get(@PathParam("id") Long id) {
+        return Bookmark.findById(id);
     }
 
-    public Response createBookmark(Bookmark bookmark) {
-        throw new UnsupportedOperationException("not yet implemented");
+    @POST
+    @Transactional
+    public Response create(Bookmark bookmark){
+        bookmark.persist();
+        return Response.created(URI.create("/bookmarks/" + bookmark.id)).build();
     }
 
-    public Response updateBookmark(Bookmark bookmark, Long id) {
-        throw new UnsupportedOperationException("not yet implemented");
+    @PUT
+    @Path("/{id}")
+    @Transactional
+    public void update(Bookmark bookmark){
+        Bookmark existing = Bookmark.findById(bookmark.id);
+        existing.url = bookmark.url;
+        existing.description = bookmark.description;
+        existing.title = bookmark.title;
     }
 
-    public Response deleteBookmark(Long id) {
-        throw new UnsupportedOperationException("not yet implemented");
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public void delete(@PathParam("id")Long id){
+        Bookmark existing = Bookmark.findById(id);
+        existing.delete();
     }
 }
