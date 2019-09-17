@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "87bed244-f71d-4d36-842c-8a42c431b0c2",
+		"name": "Bookmarkit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET /bookmarks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/bookmarks",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"bookmarks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /bookmarks",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"url\": \"https://google.fr\",\n\t\"title\": \"Google\",\n\t\"description\": \"for search\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/bookmarks",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"bookmarks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /bookmarks/1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/bookmarks/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"bookmarks",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /bookmarks/1",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 1,\n    \"description\": \"for searching\",\n    \"title\": \"Google\",\n    \"url\": \"https://google.fr\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/bookmarks/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"bookmarks",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /bookmarks/1",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/bookmarks/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"bookmarks",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
