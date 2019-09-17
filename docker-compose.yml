@@ -1,0 +1,11 @@
+version: '2'
+services:
+  # docker run --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 -e POSTGRES_USER=sarah -e POSTGRES_PASSWORD=connor -e POSTGRES_DB=mydatabase -p 5432:5432 postgres:11.3
+  postgres:
+    image: postgres:11.3
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=sarah
+      - POSTGRES_PASSWORD=connor
+      - POSTGRES_DB=mydatabase
