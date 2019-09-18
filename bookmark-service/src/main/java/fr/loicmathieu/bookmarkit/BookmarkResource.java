@@ -1,5 +1,7 @@
 package fr.loicmathieu.bookmarkit;
 
+import io.smallrye.reactive.messaging.annotations.Emitter;
+import io.smallrye.reactive.messaging.annotations.Stream;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
@@ -8,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -25,6 +28,9 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookmarkResource {
+    @ConfigProperty(name="greeting") String greeting;
+
+    @Inject @Stream("bookmarks") Emitter<Bookmark> emitter;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookmarkResource.class);
 
@@ -61,11 +67,12 @@ public class BookmarkResource {
     @Timed(name = "createBookmark.time")
     public Response createBookmark(Bookmark bookmark) {
         bookmark.persist();
+        emitter.send(bookmark);
         return Response.status(Response.Status.CREATED).entity(bookmark).build();
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("{id}")
     @Transactional
     @Operation(summary = "Update a bookmark")
     @Counted(name = "updateBookmark.count")
@@ -79,7 +86,7 @@ public class BookmarkResource {
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("{id}")
     @Transactional
     @Operation(summary = "Delete a bookmark")
     @Counted(name = "deleteBookmark.count")
