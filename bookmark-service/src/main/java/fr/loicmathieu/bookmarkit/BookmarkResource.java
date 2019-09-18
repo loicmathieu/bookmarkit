@@ -1,11 +1,15 @@
 package fr.loicmathieu.bookmarkit;
 
+import io.smallrye.reactive.messaging.annotations.Emitter;
+import io.smallrye.reactive.messaging.annotations.Stream;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -25,6 +29,8 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookmarkResource {
     @ConfigProperty(name="greeting") String greeting;
+
+    @Inject @Stream("bookmarks") Emitter<Bookmark> emitter;
 
     @PostConstruct
     void init(){
@@ -55,6 +61,7 @@ public class BookmarkResource {
     @Timed(name="create.time")
     public Response create(Bookmark bookmark){
         bookmark.persist();
+        emitter.send(bookmark);
         return Response.created(URI.create("/bookmarks/" + bookmark.id)).build();
     }
 
