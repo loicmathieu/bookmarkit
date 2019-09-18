@@ -1,9 +1,11 @@
 package fr.loicmathieu.bookmarkit;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -23,6 +25,11 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookmarkResource {
     @ConfigProperty(name="greeting") String greeting;
+
+    @PostConstruct
+    void init(){
+        System.out.println("Hello " + greeting);
+    }
 
     @GET
     @Operation(summary = "List all bookmarks")
