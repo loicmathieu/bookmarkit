@@ -25,6 +25,12 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookmarkResource {
+    @ConfigProperty(name="greeting") String greeting;
+
+    @PostConstruct
+    void init(){
+        System.out.println("Hello " + greeting);
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookmarkResource.class);
 
