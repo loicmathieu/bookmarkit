@@ -27,7 +27,7 @@ public class BookmarkResource {
     @Operation(summary = "List all bookmarks")
     @Counted(name = "listAll.count")
     @Timed(name="listAll.time")
-    public List<Bookmark> listBookmarks(){
+    public List<Bookmark> listAll(){
         return Bookmark.listAll();
     }
 
@@ -36,7 +36,7 @@ public class BookmarkResource {
     @Operation(summary = "Get a bookmark")
     @Counted(name = "get.count")
     @Timed(name="get.time")
-    public Bookmark getBookmark(@PathParam("id") Long id) {
+    public Bookmark get(@PathParam("id") Long id) {
         return Bookmark.findById(id);
     }
 
@@ -45,7 +45,7 @@ public class BookmarkResource {
     @Operation(summary = "Create a bookmark")
     @Counted(name = "create.count")
     @Timed(name="create.time")
-    public Response createBookmark(Bookmark bookmark){
+    public Response create(Bookmark bookmark){
         bookmark.persist();
         return Response.created(URI.create("/bookmarks/" + bookmark.id)).build();
     }
@@ -56,7 +56,7 @@ public class BookmarkResource {
     @Operation(summary = "Update a bookmark")
     @Counted(name = "update.count")
     @Timed(name="update.time")
-    public void updateBookmark(Bookmark bookmark){
+    public void update(Bookmark bookmark){
         Bookmark existing = Bookmark.findById(bookmark.id);
         existing.url = bookmark.url;
         existing.description = bookmark.description;
@@ -69,7 +69,7 @@ public class BookmarkResource {
     @Operation(summary = "Delete a bookmark")
     @Counted(name = "delete.count")
     @Timed(name="delete.time")
-    public void deleteBookmark(@PathParam("id")Long id){
+    public void delete(@PathParam("id")Long id){
         Bookmark existing = Bookmark.findById(id);
         existing.delete();
     }
