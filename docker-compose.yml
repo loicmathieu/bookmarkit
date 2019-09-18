@@ -1,6 +1,5 @@
 version: '2'
 services:
-  # docker run --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 -e POSTGRES_USER=sarah -e POSTGRES_PASSWORD=connor -e POSTGRES_DB=mydatabase -p 5432:5432 postgres:11.3
   postgres:
     image: postgres:11.3
     ports:
@@ -9,3 +8,14 @@ services:
       - POSTGRES_USER=sarah
       - POSTGRES_PASSWORD=connor
       - POSTGRES_DB=mydatabase
+
+  artemis:
+    image: vromero/activemq-artemis:2.8.0-alpine
+    ports:
+      - "8161:8161"
+      - "61616:61616"
+      - "5672:5672"
+    environment:
+      ARTEMIS_USERNAME: quarkus
+      ARTEMIS_PASSWORD: quarkus
+      BROKER_CONFIG_MAX_DISK_USAGE: 99

@@ -1,16 +1,14 @@
 package fr.loicmathieu.bookmarkit;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
 
-@Path("/bookmarks")
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class BookmarkConsumer {
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "hello";
+    @Incoming("bookmarks")
+    public void process(String bookmark) {
+        System.out.println("Indexing a bookmark: " +bookmark );
     }
 }
