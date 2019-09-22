@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "87bed244-f71d-4d36-842c-8a42c431b0c2",
+		"_postman_id": "817118bd-c008-4070-88ef-112517a7950a",
 		"name": "Bookmarkit",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -125,6 +125,30 @@
 					"path": [
 						"bookmarks",
 						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /geoip/{ip}",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8093/geoip/8.8.8.8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8093",
+					"path": [
+						"geoip",
+						"8.8.8.8"
 					]
 				}
 			},

@@ -1,15 +1,23 @@
-version: '2'
+version: '3'
 services:
+  geoip:
+    container_name: bookmarkit-geoip
+    image: sparow199/quarkus-geoip:1.0.0
+    ports:
+      - "8093:8080"
+
   postgres:
+    container_name: bookmarkit-postgres
     image: postgres:11.3
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       - POSTGRES_USER=sarah
       - POSTGRES_PASSWORD=connor
       - POSTGRES_DB=mydatabase
 
   artemis:
+    container_name: bookmarkit-artemis
     image: vromero/activemq-artemis:2.8.0-alpine
     ports:
       - "8161:8161"
