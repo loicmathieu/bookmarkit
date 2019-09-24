@@ -27,7 +27,7 @@ Steps:
 NOTE: Hibernate is configured to drop and recreate the schema each time you restart your application. You can change this behaviour inside your `application.properties`.
 
 
-## Step 2 - Observablity: OpenAPI and OpenMetrics
+## Step 2 - Observablity: OpenAPI, OpenMetrics and Health
 
 Goal: implements Observalibily principles: metrology, health and discoverability
 
@@ -38,6 +38,17 @@ Steps:
 - Add OpenMetrics annotations to create metrics for each method of your endpoints, you should provide counted and timed metrics via `@Counted` and `@Timed`, 
 be careful that the name of the metric must be unique. You can access your metrics at http://localhost:8080/metrics.
 - See that an health check is available at http://localhost:8080/health.
+- Create a custom check
+```
+@Readiness
+public class MyHealCheck implements HealthCheck {
+
+    @Override
+    public HealthCheckResponse call() {
+        return HealthCheckResponse.builder().name("custom").withData("key", "value").up().build();
+    }
+}
+```
 - Test that everything works with `mvn test -Dtest=BookmarkStep2Test `.
 
 NOTE: OpenAPI and OpenMetrics works as soon as you integrate the extension inside your application as it provides default documentation and metrics. Health provides basic liveness and readyness checks, you can add your own if needed.
@@ -66,7 +77,7 @@ Goal: understand how to build your application, package it in a container, confi
 
 Steps:
 
-- Package your application with `mvn package -DskipTest`
+- Package your application with `mvn package -DskipTests`
 - Run your application with `java -jar target/bookmark-service-1.0-SNAPSHOT-runner.jar`
 - Limit it's Heap memory with `java -Xmx32m -jar target/bookmark-service-1.0-SNAPSHOT-runner.jar` (you can go lower but your apps will be slower)
 - Override it's configuration from the command line with `java -Dgreeting=JAR -jar target/bookmark-service-1.0-SNAPSHOT-runner.jar`
@@ -74,7 +85,7 @@ Steps:
 - Run it with `docker run -ti -p 8080:8080 -e "QUARKUS_DATASOURCE_URL=jdbc:postgresql://{your_ip}:5432/mydatabase" bookmarkit` (replace {your_ip} by your ip).
 
 
-## Step 5 - Send a message via AMQP for each created bookmarl
+## Step 5 - Send a message via AMQP for each created bookmark
 
 Goal: implements asynchronous messaging via AMQP
 
