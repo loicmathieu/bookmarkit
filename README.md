@@ -64,7 +64,7 @@ Steps:
 - Modify `BookmarkResource` to read this configuration property and log it at startup:
   - Use `@@ConfigProperty` to inject the property inside a `greeting` variable.
   - Create a `@PostConstruct` method that log it via `System.out.println("Hello " + greeting)`.
-- Test using `mvn quarkus:dev` you should see `Hello World` in the console.
+- Test using `mvn quarkus:dev` you should see `Hello World` in the console when you hit the endpoint.
 - Add a new line to `application.properties` file: `%dev.greeting=Dev` this is an override of the same property for the dev profile.
 - Test using `mvn quarkus:dev` you should see `Hello Dev` in the console.
 
@@ -91,6 +91,7 @@ Goal: implements asynchronous messaging via AMQP
 
 Steps:
 
+- Uncomment the commented dependency `quarkus-smallrye-reactive-messaging-amqp` inside the pom.xml file.
 - Configure AMQP inside your `application.properties`
 ```
 amqp-username=quarkus
@@ -114,6 +115,7 @@ Goal: learn how to call an external REST service via MicroProfile RestClient and
 
 Steps:
 
+- Uncomment the commented dependencies `quarkus-rest-client` and `quarkus-smallrye-fault-tolerance` inside the pom.xml file.
 - Create an interface annotated with Jax-rs annotations to call the webservice TODO
 - Inject it inside the `BookmarkResource` with the `@RestClient` annotation 
 - Use it to make a call to the ws each time a bookmark is created
