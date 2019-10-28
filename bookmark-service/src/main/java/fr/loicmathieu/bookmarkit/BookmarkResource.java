@@ -1,13 +1,9 @@
 package fr.loicmathieu.bookmarkit;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -29,16 +25,6 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookmarkResource {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookmarkResource.class);
-
-    @ConfigProperty(name = "greeting")
-    private String greeting;
-
-    @PostConstruct
-    void init() {
-        LOGGER.info("Hello {}", greeting);
-    }
 
     @GET
     @Operation(summary = "List all bookmarks")
