@@ -1,7 +1,7 @@
-package com.lahzouz.bookmarkit;
+package fr.loicmathieu.bookmarkit;
 
 public class GeoIp {
-
+    
     public String query;
     public String status;
     public String country;

@@ -1,48 +1,73 @@
 package com.lahzouz.bookmarkit;
 
 import io.quarkus.test.junit.QuarkusTest;
-import org.apache.http.HttpStatus;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
-import static io.restassured.http.ContentType.TEXT;
 import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
-public class GeoIpResourceTest {
+class GeoIpResourceTest {
 
     @Test
-    public void testFindGeoIpInfo() {
+    void testFindCurrentGeoIpInfo() {
         given()
-                .when().get("/geoip/8.8.8.8")
+                .when()
+                .get("/geoip/")
                 .then()
                 .log().ifValidationFails()
-                .contentType(JSON)
-                .statusCode(HttpStatus.SC_OK)
-                .body("ip", is("8.8.8.8"),
-                        "country_code", is("US"),
-                        "country_name", is("United States"),
-                        "latitude", is(37.751f),
-                        "longitude", is(-97.822f));
+                .statusCode(500);
 
+        given()
+                .when().get("/geoip/")
+                .then()
+                .log().ifValidationFails()
+                .contentType(ContentType.JSON)
+                .statusCode(200);
+    }
+
+
+    @Test
+    void testFindGeoIpInfo() {
         given()
                 .when()
                 .get("/geoip/0")
                 .then()
                 .log().ifValidationFails()
-                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                .statusCode(500);
+
+        given()
+                .when()
+                .get("/geoip/8.8.8.8")
+                .then()
+                .log().ifValidationFails()
+                .contentType(ContentType.JSON)
+                .statusCode(200)
+                .body("query", is("8.8.8.8"),
+                        "countryCode", is("US"),
+                        "country", is("United States"),
+                        "lat", is(39.0438f),
+                        "lon", is(-77.4874f));
+
     }
 
     @Test
-    public void testFindGeoIpInfoNotFound() {
+    void testFindGeoIpInfoNotFound() {
         given()
                 .when()
                 .get("/geoip/0")
                 .then()
                 .log().ifValidationFails()
-                .contentType(TEXT)
-                .statusCode(HttpStatus.SC_NOT_FOUND);
+                .statusCode(500);
+
+        given()
+                .when()
+                .get("/geoip/0")
+                .then()
+                .log().ifValidationFails()
+                .contentType(ContentType.HTML)
+                .statusCode(500);
     }
 
 }
