@@ -1,7 +1,5 @@
 package fr.loicmathieu.bookmarkit;
 
-import io.smallrye.reactive.messaging.annotations.Channel;
-import io.smallrye.reactive.messaging.annotations.Emitter;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
@@ -10,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -38,19 +35,9 @@ public class BookmarkResource {
     @ConfigProperty(name = "greeting")
     private String greeting;
 
-    @Channel("bookmarks")
-    private Emitter<Bookmark> emitter;
-
     @PostConstruct
     void init() {
         LOGGER.info("Hello {}", greeting);
-    }
-
-    @PreDestroy
-    void shutdown() {
-        if (!emitter.isCancelled()) {
-            emitter.complete();
-        }
     }
 
     @GET
@@ -77,7 +64,6 @@ public class BookmarkResource {
     @Timed(name = "createBookmark.time")
     public Response createBookmark(@Valid Bookmark bookmark) {
             bookmark.persist();
-            this.emitter.send(bookmark);
             return Response.status(Response.Status.CREATED).entity(bookmark).build();
     }
 
