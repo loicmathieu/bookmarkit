@@ -3,11 +3,9 @@ package fr.loicmathieu.bookmarkit;
 import io.smallrye.reactive.messaging.annotations.Channel;
 import io.smallrye.reactive.messaging.annotations.Emitter;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,9 +41,6 @@ public class BookmarkResource {
     @Channel("bookmarks")
     private Emitter<Bookmark> emitter;
 
-    @RestClient
-    private GeoIpService geoIpService;
-
     @PostConstruct
     void init() {
         LOGGER.info("Hello {}", greeting);
@@ -80,17 +75,10 @@ public class BookmarkResource {
     @Operation(summary = "Create a bookmark")
     @Counted(name = "createBookmark.count")
     @Timed(name = "createBookmark.time")
-    @Retry(maxRetries = 2)
     public Response createBookmark(@Valid Bookmark bookmark) {
-        GeoIp geoIp = geoIpService.getIpInformation();
-        if (geoIp != null) {
-            bookmark.location = geoIp.city;
             bookmark.persist();
             this.emitter.send(bookmark);
             return Response.status(Response.Status.CREATED).entity(bookmark).build();
-        } else {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
     }
 
     @PUT
