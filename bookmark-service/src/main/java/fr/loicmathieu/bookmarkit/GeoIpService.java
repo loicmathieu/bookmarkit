@@ -1,24 +1,18 @@
-package com.lahzouz.bookmarkit;
+package fr.loicmathieu.bookmarkit;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("/json")
+@Path("/geoip")
 @RegisterRestClient
 public interface GeoIpService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    GeoIp getCurrentIpInformation();
-
-    @GET
-    @Path("/{ip}")
-    @Produces(MediaType.APPLICATION_JSON)
-    GeoIp getIpInformation(@PathParam("ip") String ip);
+    GeoIp getIpInformation();
 
 }
