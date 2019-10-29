@@ -13,6 +13,10 @@ import javax.ws.rs.core.MediaType;
 public interface GeoIpService {
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    GeoIp getCurrentIpInformation();
+
+    @GET
     @Path("/{ip}")
     @Produces(MediaType.APPLICATION_JSON)
     GeoIp getIpInformation(@PathParam("ip") String ip);

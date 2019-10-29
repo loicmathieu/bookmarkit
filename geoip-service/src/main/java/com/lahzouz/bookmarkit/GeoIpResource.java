@@ -17,20 +17,32 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @RegisterRestClient
 public class GeoIpResource {
 
-    @Inject
     @RestClient
     private GeoIpService geoIpService;
-    private AtomicBoolean fail = new AtomicBoolean();
+    private AtomicBoolean fail = new AtomicBoolean(true);
+    private AtomicBoolean failIp = new AtomicBoolean(true);
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findGeoIpInfo() {
+
+        if (fail.compareAndSet(true, false)) {
+            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
+        } else {
+            fail.getAndSet(true);
+            return Response.ok(geoIpService.getCurrentIpInformation()).build();
+        }
+    }
 
     @GET
     @Path("/{ip}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findGeoIpInfo(@PathParam("ip") String ip) {
 
-        if (fail.compareAndSet(true, false)) {
+        if (failIp.compareAndSet(true, false)) {
             return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
         } else {
-            fail.getAndSet(true);
+            failIp.getAndSet(true);
             return Response.ok(geoIpService.getIpInformation(ip)).build();
         }
     }
