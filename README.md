@@ -63,7 +63,7 @@ Steps:
 - Add a configuration property inside you `application.properties` file: `greeting=World` 
 - Modify `BookmarkResource` to read this configuration property and log it at startup:
   - Use `@ConfigProperty` to inject the property inside a `greeting` variable.
-  - Create a `@PostConstruct` method that log it via `log.info("Hello {}", greeting)` using [SLFJ](https://www.slf4j.org/).
+  - Create a `@PostConstruct` method that log it via `LOGGER.infof("Hello %s", greeting)` using [Jboss logging](https://docs.jboss.org/jbosslogging/latest/org/jboss/logging/Logger.html).
 - Test using `mvn quarkus:dev` you should see `Hello World` in the console.
 - Add a new line to `application.properties` file: `%dev.greeting=Dev` this is an override of the same property for the dev profile.
 - Test using `mvn quarkus:dev` you should see `Hello Dev` in the console.
@@ -122,4 +122,3 @@ Steps:
 - Test it multiple times, you should see that it crash half of the time
 - Add fault-tolerance `@Retry` annotation to retry the call
 - Test it again multiple times, it should work now :)
-
