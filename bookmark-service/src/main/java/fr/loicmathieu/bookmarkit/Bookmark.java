@@ -1,7 +1,9 @@
 package fr.loicmathieu.bookmarkit;
 
+import javax.persistence.Entity;
+
+@Entity
 public class Bookmark {
-    public Long id;//TODO manage Hibernate ID auto-generation
     public String title;
     public String url;
     public String description;

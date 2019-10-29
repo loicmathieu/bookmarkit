@@ -1,7 +1,6 @@
 package fr.loicmathieu.bookmarkit;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -13,23 +12,23 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookmarkResource {
 
-    public List<Bookmark> listAll(){
+    public List<Bookmark> listBookmarks() {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
-    public Bookmark get(Long id) {
+    public Bookmark getBookmark(Long id) {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
-    public Response create(Bookmark bookmark){
+    public Response createBookmark(Bookmark bookmark) {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
-    public void update(Bookmark bookmark){
+    public Response updateBookmark(Bookmark bookmark, Long id) {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
-    public void delete(Long id){
+    public Response deleteBookmark(Long id) {
         throw new UnsupportedOperationException("not yet implemented");
     }
 }
