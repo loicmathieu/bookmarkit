@@ -1,7 +1,11 @@
 package fr.loicmathieu.bookmarkit;
 
-public class Bookmark {
-    public Long id;//TODO manage Hibernate ID auto-generation
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
+import javax.persistence.Entity;
+
+@Entity
+public class Bookmark extends PanacheEntity {
     public String title;
     public String url;
     public String description;
