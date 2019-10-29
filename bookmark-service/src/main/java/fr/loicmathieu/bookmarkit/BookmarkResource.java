@@ -1,17 +1,14 @@
 package fr.loicmathieu.bookmarkit;
 
+import io.smallrye.reactive.messaging.annotations.Channel;
 import io.smallrye.reactive.messaging.annotations.Emitter;
-import io.smallrye.reactive.messaging.annotations.Stream;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -29,25 +26,19 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookmarkResource {
-    @ConfigProperty(name="greeting") String greeting;
 
-    @Inject @Stream("bookmarks") Emitter<Bookmark> emitter;
-
-    @PostConstruct
-    void init(){
-        System.out.println("Hello " + greeting);
-    }
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookmarkResource.class);
+    private static final Logger LOGGER = Logger.getLogger(BookmarkResource.class);
 
     @ConfigProperty(name = "greeting")
     private String greeting;
 
+    @Channel("bookmarks")
+    private Emitter<Bookmark> emitter;
+
     @PostConstruct
     void init() {
-        LOGGER.info("Hello {}", greeting);
+        LOGGER.infof("Hello %s", greeting);
     }
-
 
     @GET
     @Operation(summary = "List all bookmarks")
@@ -73,8 +64,8 @@ public class BookmarkResource {
     @Timed(name = "createBookmark.time")
     public Response createBookmark(Bookmark bookmark) {
         bookmark.persist();
-        emitter.send(bookmark);
-        return Response.created(URI.create("/bookmarks/" + bookmark.id)).build();
+        this.emitter.send(bookmark);
+        return Response.status(Response.Status.CREATED).entity(bookmark).build();
     }
 
     @PUT
