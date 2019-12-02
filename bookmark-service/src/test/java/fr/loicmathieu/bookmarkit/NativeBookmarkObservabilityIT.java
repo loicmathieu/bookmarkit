@@ -1,9 +1,9 @@
-package com.lahzouz.bookmarkit;
+package fr.loicmathieu.bookmarkit;
 
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-public class NativeGeoIpResourceIT extends GeoIpResourceTest {
+class NativeBookmarkObservabilityIT extends BookmarkObservabilityTest {
 
     // Execute the same tests but in native mode.
 }

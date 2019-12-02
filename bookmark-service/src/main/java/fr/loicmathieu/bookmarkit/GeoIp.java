@@ -1,4 +1,4 @@
-package com.lahzouz.bookmarkit;
+package fr.loicmathieu.bookmarkit;
 
 public class GeoIp {
     public String query;

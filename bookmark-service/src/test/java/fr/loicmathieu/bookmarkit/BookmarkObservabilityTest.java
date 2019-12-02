@@ -20,7 +20,7 @@ class BookmarkObservabilityTest {
                 .get("/metrics/application")
                 .then()
                 .statusCode(200)
-                .body("size()", CoreMatchers.is(10));
+                .body("size()", CoreMatchers.is(13));
     }
 
     @Test

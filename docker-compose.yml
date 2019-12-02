@@ -12,8 +12,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=quarkus
-      - POSTGRES_PASSWORD=quarkus
+      - POSTGRES_USER=sarah
+      - POSTGRES_PASSWORD=connor
       - POSTGRES_DB=bookmarkit
 
   artemis:

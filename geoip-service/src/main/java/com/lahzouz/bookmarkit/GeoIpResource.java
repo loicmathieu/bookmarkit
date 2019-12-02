@@ -18,14 +18,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class GeoIpResource {
 
     @RestClient
-    private GeoIpService geoIpService;
+    GeoIpService geoIpService;
     private AtomicBoolean fail = new AtomicBoolean(true);
     private AtomicBoolean failIp = new AtomicBoolean(true);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response findGeoIpInfo() {
-
         if (fail.compareAndSet(true, false)) {
             return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
         } else {
@@ -38,7 +37,6 @@ public class GeoIpResource {
     @Path("/{ip}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findGeoIpInfo(@PathParam("ip") String ip) {
-
         if (failIp.compareAndSet(true, false)) {
             return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
         } else {
