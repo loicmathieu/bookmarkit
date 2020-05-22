@@ -1,16 +1,17 @@
 package fr.loicmathieu.bookmarkit;
 
+import io.smallrye.reactive.messaging.annotations.Channel;
 import io.smallrye.reactive.messaging.annotations.Emitter;
-import io.smallrye.reactive.messaging.annotations.Stream;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
+import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import javax.annotation.PreDestroy;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -19,8 +20,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 
@@ -28,64 +31,81 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookmarkResource {
-    @ConfigProperty(name="greeting") String greeting;
 
-    @Inject @Stream("bookmarks") Emitter<Bookmark> emitter;
+    private static final Logger LOGGER = Logger.getLogger(BookmarkResource.class);
+
+    @ConfigProperty(name = "greeting")
+    private String greeting;
+
+    @Channel("bookmarks")
+    private Emitter<Bookmark> emitter;
 
     @PostConstruct
-    void init(){
-        System.out.println("Hello " + greeting);
+    void init() {
+        LOGGER.infof("Hello %s", greeting);
+    }
+
+    @PreDestroy
+    void shutdown() {
+        if (!emitter.isCancelled()) {
+            emitter.complete();
+        }
     }
 
     @GET
     @Operation(summary = "List all bookmarks")
-    @Counted(name = "listAll.count")
-    @Timed(name="listAll.time")
-    public List<Bookmark> listAll(){
+    @Counted(name = "listBookmarks.count")
+    @Timed(name = "listBookmarks.time")
+    public List<Bookmark> listBookmarks() {
         return Bookmark.listAll();
     }
 
     @GET
-    @Path("/{id}")
+    @Path("{id}")
     @Operation(summary = "Get a bookmark")
-    @Counted(name = "get.count")
-    @Timed(name="get.time")
-    public Bookmark get(@PathParam("id") Long id) {
+    @Counted(name = "getBookmark.count")
+    @Timed(name = "getBookmark.time")
+    public Bookmark getBookmark(@PathParam("id") Long id) {
         return Bookmark.findById(id);
     }
 
     @POST
     @Transactional
     @Operation(summary = "Create a bookmark")
-    @Counted(name = "create.count")
-    @Timed(name="create.time")
-    public Response create(Bookmark bookmark){
+    @Counted(name = "createBookmark.count")
+    @Timed(name = "createBookmark.time")
+    public Response createBookmark(@Valid Bookmark bookmark) {
         bookmark.persist();
-        emitter.send(bookmark);
-        return Response.created(URI.create("/bookmarks/" + bookmark.id)).build();
+        this.emitter.send(bookmark);
+        return Response.status(Response.Status.CREATED).entity(bookmark).build();
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("{id}")
     @Transactional
     @Operation(summary = "Update a bookmark")
-    @Counted(name = "update.count")
-    @Timed(name="update.time")
-    public void update(Bookmark bookmark){
-        Bookmark existing = Bookmark.findById(bookmark.id);
-        existing.url = bookmark.url;
-        existing.description = bookmark.description;
-        existing.title = bookmark.title;
+    @Counted(name = "updateBookmark.count")
+    @Timed(name = "updateBookmark.time")
+    public Response updateBookmark(@Valid Bookmark bookmark, @PathParam("id") Long id, @Context UriInfo uriInfo) {
+        Bookmark entity = Bookmark.findById(id);
+        entity.description = bookmark.description;
+        entity.location = bookmark.location;
+        entity.title = bookmark.title;
+        entity.url = bookmark.url;
+        return Response.created(URI.create(uriInfo.getPath())).build();
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("{id}")
     @Transactional
     @Operation(summary = "Delete a bookmark")
-    @Counted(name = "delete.count")
-    @Timed(name="delete.time")
-    public void delete(@PathParam("id")Long id){
-        Bookmark existing = Bookmark.findById(id);
-        existing.delete();
+    @Counted(name = "deleteBookmark.count")
+    @Timed(name = "deleteBookmark.time")
+    public Response deleteBookmark(@PathParam("id") Long id) {
+        Bookmark bookmark = Bookmark.findById(id);
+        if (bookmark.isPersistent()) {
+            bookmark.delete();
+        }
+        return Response.noContent().build();
     }
 }
