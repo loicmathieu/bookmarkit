@@ -13,7 +13,7 @@ There is a Postman collection that can help to test your application during you 
 
 ## Step 1 - Quarkus basics
 
-Goal: implements a bookmark service that pass the test from `fr.loicmathieu.bookmarkit.BookmarkStep1Test`.
+Goal: implements a bookmark service that pass the test from `fr.loicmathieu.bookmarkit.BookmarkResourceTest`.
 
 Steps:
 
@@ -22,7 +22,7 @@ Steps:
   You must implement the service as a JAX-RS resource ([WRITING JSON REST SERVICES](https://quarkus.io/guides/rest-json-guide)).
   You must use Hibernate ORM with Panache to access the database ([SIMPLIFIED HIBERNATE ORM WITH PANACHE](https://quarkus.io/guides/hibernate-orm-panache-guide)).
 - Run the service with `mvn compile quarkus:dev` it has livereload !
-- Test that everything works with `mvn test -Dtest=BookmarkStep1Test `.
+- Test that everything works with `mvn test -Dtest=BookmarkResourceTest`.
 
 NOTE: Hibernate is configured to drop and recreate the schema each time you restart your application. You can change this behaviour inside your `application.properties`.
 
@@ -41,15 +41,15 @@ be careful that the name of the metric must be unique. You can access your metri
 - Create a custom check
 ```
 @Readiness
-public class MyHealCheck implements HealthCheck {
+public class AppHealthCheck implements HealthCheck {
 
     @Override
     public HealthCheckResponse call() {
-        return HealthCheckResponse.builder().name("custom").withData("key", "value").up().build();
+        return HealthCheckResponse.builder().name("bookmark").withData("is", "always").up().build();
     }
 }
 ```
-- Test that everything works with `mvn test -Dtest=BookmarkStep2Test `.
+- Test that everything works with `mvn test -Dtest=BookmarkObservabilityTest`.
 
 NOTE: OpenAPI and OpenMetrics works as soon as you integrate the extension inside your application as it provides default documentation and metrics. Health provides basic liveness and readyness checks, you can add your own if needed.
 
@@ -62,9 +62,9 @@ Steps:
 
 - Add a configuration property inside you `application.properties` file: `greeting=World` 
 - Modify `BookmarkResource` to read this configuration property and log it at startup:
-  - Use `@@ConfigProperty` to inject the property inside a `greeting` variable.
-  - Create a `@PostConstruct` method that log it via `System.out.println("Hello " + greeting)`.
-- Test using `mvn quarkus:dev` you should see `Hello World` in the console when you hit the endpoint.
+  - Use `@ConfigProperty` to inject the property inside a `greeting` variable.
+  - Create a `@PostConstruct` method that log it via `log.info("Hello {}", greeting)` using [SLFJ](https://www.slf4j.org/).
+- Test using `mvn quarkus:dev` you should see `Hello World` in the console.
 - Add a new line to `application.properties` file: `%dev.greeting=Dev` this is an override of the same property for the dev profile.
 - Test using `mvn quarkus:dev` you should see `Hello Dev` in the console.
 
