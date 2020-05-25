@@ -4,8 +4,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
@@ -26,14 +25,14 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookmarkResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookmarkResource.class);
+    private static final Logger LOGGER = Logger.getLogger(BookmarkResource.class);
 
     @ConfigProperty(name = "greeting")
     private String greeting;
 
     @PostConstruct
     void init() {
-        LOGGER.info("Hello {}", greeting);
+        LOGGER.infof("Hello %s", greeting);
     }
 
 
