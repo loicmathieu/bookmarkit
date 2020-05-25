@@ -13,8 +13,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 
@@ -25,17 +27,17 @@ public class BookmarkResource {
 
     @GET
     @Operation(summary = "List all bookmarks")
-    @Counted(name = "listAll.count")
-    @Timed(name="listAll.time")
-    public List<Bookmark> listBookmarks(){
+    @Counted(name = "listBookmarks.count")
+    @Timed(name = "listBookmarks.time")
+    public List<Bookmark> listBookmarks() {
         return Bookmark.listAll();
     }
 
     @GET
-    @Path("/{id}")
+    @Path("{id}")
     @Operation(summary = "Get a bookmark")
-    @Counted(name = "get.count")
-    @Timed(name="get.time")
+    @Counted(name = "getBookmark.count")
+    @Timed(name = "getBookmark.time")
     public Bookmark getBookmark(@PathParam("id") Long id) {
         return Bookmark.findById(id);
     }
@@ -43,34 +45,38 @@ public class BookmarkResource {
     @POST
     @Transactional
     @Operation(summary = "Create a bookmark")
-    @Counted(name = "create.count")
-    @Timed(name="create.time")
-    public Response createBookmark(Bookmark bookmark){
-        bookmark.persist();
-        return Response.created(URI.create("/bookmarks/" + bookmark.id)).build();
+    @Counted(name = "createBookmark.count")
+    @Timed(name = "createBookmark.time")
+    public Response createBookmark(Bookmark bookmark) {
+            bookmark.persist();
+            return Response.status(Response.Status.CREATED).entity(bookmark).build();
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("{id}")
     @Transactional
     @Operation(summary = "Update a bookmark")
-    @Counted(name = "update.count")
-    @Timed(name="update.time")
-    public void updateBookmark(Bookmark bookmark){
-        Bookmark existing = Bookmark.findById(bookmark.id);
-        existing.url = bookmark.url;
-        existing.description = bookmark.description;
-        existing.title = bookmark.title;
+    @Counted(name = "updateBookmark.count")
+    @Timed(name = "updateBookmark.time")
+    public void updateBookmark(Bookmark bookmark, @PathParam("id") Long id) {
+        Bookmark entity = Bookmark.findById(id);
+        entity.description = bookmark.description;
+        entity.location = bookmark.location;
+        entity.title = bookmark.title;
+        entity.url = bookmark.url;
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("{id}")
     @Transactional
     @Operation(summary = "Delete a bookmark")
-    @Counted(name = "delete.count")
-    @Timed(name="delete.time")
-    public void deleteBookmark(@PathParam("id")Long id){
-        Bookmark existing = Bookmark.findById(id);
-        existing.delete();
+    @Counted(name = "deleteBookmark.count")
+    @Timed(name = "deleteBookmark.time")
+    public Response deleteBookmark(@PathParam("id") Long id) {
+        Bookmark bookmark = Bookmark.findById(id);
+        if (bookmark != null) {
+            bookmark.delete();
+        }
+        return Response.noContent().build();
     }
 }
