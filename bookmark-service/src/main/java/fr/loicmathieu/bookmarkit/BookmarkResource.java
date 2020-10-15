@@ -29,7 +29,7 @@ public class BookmarkResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(BookmarkResource.class);
 
     @ConfigProperty(name = "greeting")
-    private String greeting;
+    String greeting;
 
     @PostConstruct
     void init() {
