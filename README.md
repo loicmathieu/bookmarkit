@@ -21,19 +21,19 @@ Steps:
 - Implements the `fr.loicmathieu.bookmarkit.BookmarkResource` service, it's a classical CRUD service to allow to create/read/update/delete a bookmark. 
   You must implement the service as a JAX-RS resource ([WRITING JSON REST SERVICES](https://quarkus.io/guides/rest-json-guide)).
   You must use Hibernate ORM with Panache to access the database ([SIMPLIFIED HIBERNATE ORM WITH PANACHE](https://quarkus.io/guides/hibernate-orm-panache-guide)).
-- Run the service with `mvn compile quarkus:dev` it has livereload !
+- Run the service with `mvn compile quarkus:dev` it has live reload !
 - Test that everything works with `mvn test -Dtest=BookmarkResourceTest`.
 
-NOTE: Hibernate is configured to drop and recreate the schema each time you restart your application. You can change this behaviour inside your `application.properties`.
+NOTE: Hibernate is configured to drop and recreate the schema each time you restart your application. You can change this behavior inside your `application.properties`.
 
 
-## Step 2 - Observablity: OpenAPI, OpenMetrics and Health
+## Step 2 - Observability: OpenAPI, OpenMetrics and Health
 
-Goal: implements Observalibily principles: metrology, health and discoverability
+Goal: implements Observability principles: metrology, health and discoverability
 
 Steps:
 
-- Add [OpenAPI annotations](https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#annotations) to document your API, it will be availabe at http://localhost:8080/openapi and there is an embedded swagger UI at http://localhost:8080/swagger-ui
+- Add [OpenAPI annotations](https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#annotations) to document your API, it will be available at http://localhost:8080/openapi and there is an embedded swagger UI at http://localhost:8080/swagger-ui
   - Use `@Operation` to document each operation.
 - Add OpenMetrics annotations to create metrics for each method of your endpoints, you should provide counted and timed metrics via `@Counted` and `@Timed`, 
 be careful that the name of the metric must be unique. You can access your metrics at http://localhost:8080/metrics.
@@ -51,7 +51,7 @@ public class AppHealthCheck implements HealthCheck {
 ```
 - Test that everything works with `mvn test -Dtest=BookmarkObservabilityTest`.
 
-NOTE: OpenAPI and OpenMetrics works as soon as you integrate the extension inside your application as it provides default documentation and metrics. Health provides basic liveness and readyness checks, you can add your own if needed.
+NOTE: OpenAPI and OpenMetrics works as soon as you integrate the extension inside your application as it provides default documentation and metrics. Health provides basic liveness and readiness checks, you can add your own if needed.
 
 
 ## Step 3 - Configuration
@@ -109,7 +109,7 @@ mp.messaging.outgoing.bookmarks.durable=true
 - Create some bookmarks, you should see a line in the console of  bookmark-message-consumer for each creation
 
 
-## Step 6 - Call an external service reliabily
+## Step 6 - Call an external service reliability
 
 Goal: learn how to call an external REST service via MicroProfile RestClient and use the fault-tolerance capabilities to make it reliable
 
